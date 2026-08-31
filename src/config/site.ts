@@ -195,6 +195,21 @@ export const siteConfig: SiteConfig = {
     buttonHref: "/guide/no-more-room-in-hell-2-weapons-tier-list",
   },
 
+  ads: {
+    sidebar: `<script async="async" data-cfasync="false" src="https://pl31113120.profitableratecpmnetwork.com/20aee027b976905f9912a08597596498/invoke.js"></script>
+<div id="container-20aee027b976905f9912a08597596498"></div>`,
+    footerBanner: `<script>
+ atOptions = {
+ 'key' : '30b5eba343f05fb5abb995602379aad1',
+ 'format' : 'iframe',
+ 'height' : 90,
+ 'width' : 728,
+ 'params' : {}
+ };
+</script>
+<script src="https://www.highrevenueformat.com/30b5eba343f05fb5abb995602379aad1/invoke.js"></script>`,
+  },
+
   faq: [
     {
       question: "Is No More Room in Hell 2 crossplay?",
