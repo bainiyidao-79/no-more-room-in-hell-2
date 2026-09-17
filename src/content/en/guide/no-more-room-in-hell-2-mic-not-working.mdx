@@ -1,0 +1,31 @@
+---
+title: "No More Room in Hell 2 Mic Not Working — Quick Fix"
+description: "No More Room in Hell 2 microphone not working? Rebinding the push-to-talk key triggers a known bug — reverting to the default key binding restores voice chat."
+date: "2024-10-24"
+updated: "2026-09-18"
+category: "Guides"
+keywords: ["no more room in hell 2 mic not working", "nmrh2 microphone fix", "no more room in hell 2 voice chat not working", "no more room in hell 2 push to talk"]
+readTime: "2 min read"
+---
+
+<div class="art-ph lead"><img src="/images/cover-mic-fix.webp" loading="eager" alt="Two zombies on a dark street in No More Room in Hell 2"><figcaption>Proximity voice chat is your lifeline in the dark — losing it hurts more than any gun.</figcaption></div>
+
+**If your microphone stops working in No More Room in Hell 2, the cause is almost certainly a rebound push-to-talk key.** A bug in the game's input handling breaks voice chat when the mic key is changed from its default — and reverting to the default binding brings it straight back.
+
+## The fix
+
+1. Open the game's **options / key bindings** menu.
+2. Find the **push-to-talk** binding and reset it to the default key.
+3. Don't rebind it — leave the default in place and test voice chat in a session.
+
+That's the whole fix. Players who rebound the key report the mic failing immediately afterwards, while the default binding works every time.
+
+## Why it happens
+
+The bug lives in how the game listens for the rebound key: voice transmission simply never triggers on a custom binding, so your teammates hear silence while your mic works fine everywhere else. It was reported during the game's early access period, and until a patch conclusively fixed it, the default key was the only reliable option. If you are on a post-1.0 build and rebound keys still fail the same way, the workaround stands — play with the default binding.
+
+## If the default key doesn't work either
+
+Then the problem is outside the game: confirm the correct recording device is set as your OS default, check that the mic isn't muted at the system level, and test it in another voice app. In-game voice also has two channels in No More Room in Hell 2 — **proximity VOIP**, which carries over distance, and the **party channel** for your group — so make sure you're transmitting on the one your teammates are actually listening to.
+
+For more connection-era issues, see our guides to [high ping](/guide/no-more-room-in-hell-2-high-ping) and [server assignment failures](/guide/no-more-room-in-hell-2-server-assignment-failed).

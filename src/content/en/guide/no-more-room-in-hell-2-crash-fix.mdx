@@ -1,0 +1,35 @@
+---
+title: "No More Room in Hell 2 Crashing? Working Fixes"
+description: "Fix No More Room in Hell 2 crashes: the Intel 13th/14th-gen CPU instability fix with Intel XTU, GPU driver updates and Windows updates that stop constant crashing."
+date: "2024-10-24"
+updated: "2026-09-18"
+category: "Guides"
+keywords: ["no more room in hell 2 crash", "nmrh2 crashing fix", "no more room in hell 2 keeps crashing", "no more room in hell 2 intel xtu"]
+readTime: "4 min read"
+---
+
+<div class="art-ph lead"><img src="/images/cover-crash-fix.webp" loading="eager" alt="Intel Extreme Tuning Utility showing CPU voltage offsets"><figcaption>Intel XTU — the tool that fixes crash-prone 13th/14th-gen Intel CPUs.</figcaption></div>
+
+**Most No More Room in Hell 2 crash loops trace back to three causes: unstable Intel 13th/14th-gen CPUs, outdated graphics drivers, or an out-of-date Windows build.** Work through them in that order — the CPU issue is by far the most common for players hit by endless crashes at launch or mid-match.
+
+## Fix 1: Underclock Intel 13th/14th-gen CPUs with Intel XTU
+
+Intel's 13th and 14th-generation desktop processors shipped with instability issues that specifically slam CPU-heavy games — and No More Room in Hell 2's horde physics is exactly the kind of workload that triggers them. The fix is to cap the processor's boost behavior:
+
+1. Download **Intel Extreme Tuning Utility (Intel XTU)** from Intel's official site.
+2. Open the Core Voltage offset controls and lower the CPU's frequency ratio to **51x or below** (51x itself is fine).
+3. Apply, then restart and launch the game.
+
+Players reporting constant crashes on these chips consistently single out this fix as the one that works. Once the ratio is capped, the random shutdowns and to-desktop crashes stop.
+
+## Fix 2: Update your graphics drivers
+
+GPU driver mismatches are the second-largest crash source. Head to the official NVIDIA, AMD or Intel driver page for your exact card, grab the latest Game Ready / Adrenalin driver, install it, and reboot. Driver suites can also do this for you — just avoid third-party "driver updater" tools.
+
+## Fix 3: Update Windows
+
+An older Windows 10 build can crash the game outright. Install all pending Windows Updates, reboot, and try again. If crashes persist on a fully updated Windows 10 install, upgrading to Windows 11 has resolved it for some players — the game targets newer DirectX 11 runtimes that older builds handle poorly.
+
+## Still crashing?
+
+If all three fixes are done and the game still drops, verify your installation files through Steam (the same steps as our [loading screen fix](/guide/no-more-room-in-hell-2-stuck-on-loading)), and check the game's official Steam forums for fresh patch notes — a broken build after an update is rare but happens, and hotfixes usually land within days.

@@ -5,245 +5,243 @@ export const siteUrl = (
 export type NavLink = { label: string; href: string };
 export type NavGroup = { title: string; children: NavLink[] };
 
+/** 首页轮播页（固定 3 篇；少于 3 篇时轮播按实际条数渲染） */
+export type CarouselSlide = {
+  /** 轮播配图（放 public/images/，宽高比按 790:292 裁切） */
+  image: string;
+  title: string;
+  href: string;
+};
+
+/** 右侧游戏信息卡的字段行（原站字段：制作公司/发行公司/发售日期/游戏平台/游戏类型） */
+export type GameInfoField = { label: string; value: string };
+
+/** 左视频列的 YouTube 条目（官方频道代表作优先；2–4 个） */
+export type VideoItem = { youtubeId: string; title: string };
+
+/**
+ * 主题色 token 名（供组件以 var() 引用）。
+ * ⚠️ 色值唯一来源 = src/app/globals.css 的 @theme 块，本文件不重复定义色值。
+ * 每站正式配色由 g-art-design 从游戏官方素材提取后覆盖 globals.css 的三个主槽位。
+ */
+export const themeTokens = {
+  primary: "--color-primary",
+  accent: "--color-accent",
+  auxiliary: "--color-auxiliary",
+} as const;
+
 export type SiteConfig = {
+  /** 游戏名（全站唯一来源） */
   name: string;
   shortName: string;
-  description: string;
-  heroTitle: string;
-  heroSubtitle: string;
-  /** Hero 区顶部小徽章文字（如 "WIKI GUIDE"），空串则不显示 */
-  eyebrow?: string;
-  primaryCtaLabel: string;
-  primaryCtaHref: string;
 
-  // 官方链接
-  platformUrl?: string;
-  discordUrl?: string;
-  youtubeChannelUrl?: string;
+  /** SEO 三件套 */
+  seo: {
+    title: string;
+    description: string;
+    keywords: string;
+  };
 
-  // 顶部导航（Header 用的平铺链接；不填则取 nav 第一组前 4 项）
-  topNav?: NavLink[];
+  /** Hero 大图区（无顶栏，Hero 直顶） */
+  hero: {
+    /** keyart 大图路径；同时用作内容页右栏 banner */
+    image: string;
+    eyebrow?: string;
+    title: string;
+    subtitle?: string;
+  };
 
-  // 侧边栏目录树（按实际内容增减，不做死链接）
+  /** 首页横向轮播：3 篇，5s 自动换页 */
+  carousel: {
+    autoPlayMs: number;
+    slides: CarouselSlide[];
+  };
+
+  /** 右侧游戏信息卡 */
+  gameInfo: {
+    title: string;
+    /** 封面图路径（125×166 比例） */
+    cover: string;
+    fields: GameInfoField[];
+    /** Steam 入口按钮（文案统一 View on Steam ↗） */
+    ctaLabel: string;
+    ctaHref: string;
+  };
+
+  /** 左视频列 YouTube id 列表（2–4 个，数量由右攻略区高度反推） */
+  videos: VideoItem[];
+
+  /** 官方链接（页脚展示；建议至少 1 条，其余留空则不渲染） */
+  officialLinks: NavLink[];
+
+  /** 全站攻略导航分组（首页攻略区 / 内容页右栏导航树共用；每站按真实内容增减） */
   nav: NavGroup[];
 
-  // 首页 YouTube 视频（Workflow 建站时填入：官方频道代表作 > 播放量最高热门视频）
-  heroVideo?: {
-    youtubeId: string;
-    title?: string;
-    description?: string;
+  /** 栏目简介（栏目页 L2 顶部一段话，key=section 目录名；缺省回退到「N guides…」） */
+  sectionIntros?: Record<string, string>;
+
+  /** 栏目兑底图池：内容页缺图时按栏目取图，避免与右栏 keyart 同图同屏（扬哥 2026-09-16） */
+  sectionFallbackImages?: Record<string, string>;
+
+  /** 页脚 */
+  footer: {
+    copyright: string;
+    contactLabel: string;
+    /** 联系方式（邮箱/表单链接文本）；不填则页脚不显示联系位 */
+    contact?: string;
   };
 
-  // 首页「Trending Now」：精选文章（不填则整块隐藏）
-  trending?: { label: string; href: string; description?: string }[];
-
-  // 首页「What is <Game>?」介绍区（不填则整块隐藏）
-  gameIntro?: {
-    title?: string;
-    paragraphs: string[];
-    facts?: { label: string; value: string }[];
-  };
-
-  // 底部 CTA 大横幅（光晕容器，不填则整块隐藏）
-  ctaBanner?: {
-    title: string;
-    description?: string;
-    buttonLabel: string;
-    buttonHref: string;
-  };
-
-  // 广告位（骨架预制）：填入广告代码（HTML/JS）即生效；留空则完全不渲染不保留位置
+  /** 广告位（骨架预制）：填入广告代码（HTML/JS）即生效；留空则完全不渲染不占位 */
   ads?: {
-    /** 侧边栏底部广告位（菜单栏下方） */
-    sidebar?: string;
+    /** 首页攻略区顶部 banner（内容区宽度） */
+    contentBanner?: string;
     /** 页面底部 banner 广告位（页脚上方，每页都有） */
     footerBanner?: string;
+    /** 正文中横幅广告位（728×90）：位置在第一屏之后，长文自动多插一个位（同一份代码可多处复用） */
+    articleInline?: string;
+    /** 正文第二坑位代码（扬哥 2026-09-16：长文双广告位时用不同代码/创意，避免同屏重复）；缺省回退 articleInline */
+    articleInline2?: string;
+    /** 左右浮动竖幅 160×600 旧写法：只填此字段=左右共用同一单元（同屏创意相同） */
+    sideRail?: string;
+    /** 左侧竖幅广告单元（独立 key=独立竞价/创意/统计；优先于 sideRail） */
+    sideRailLeft?: string;
+    /** 右侧竖幅广告单元（独立 key=独立竞价/创意/统计；优先于 sideRail） */
+    sideRailRight?: string;
   };
-
-  // 可选：FAQ
-  faq?: { question: string; answer: string }[];
-
-  // SEO 关键词（整站级）
-  keywords?: string[];
 };
 
 export const siteConfig: SiteConfig = {
-  name: "No More Room in Hell 2 Wiki",
-  shortName: "NMRIH2 Wiki",
-  description:
-    "No More Room in Hell 2 wiki: weapons tier list, best loadouts, co-op guides, roadmap and platform info for Torn Banner's 8-player zombie survival shooter.",
-  heroTitle: "No More Room in Hell 2 Wiki",
-  heroSubtitle: "Weapons, Loadouts, Crossplay & Roadmap",
-  eyebrow: "Wiki Guide",
-  primaryCtaLabel: "Read the Weapons Tier List",
-  primaryCtaHref: "/guide/no-more-room-in-hell-2-weapons-tier-list",
+  name: "No More Room in Hell 2",
+  shortName: "NMRH2",
 
-  platformUrl: "https://store.steampowered.com/app/292000/",
-  discordUrl: "",
-  youtubeChannelUrl: "https://www.youtube.com/channel/UCygSSHjXjhLdPeDf1SDXqHw",
+  seo: {
+    title: "No More Room in Hell 2 Wiki — Guides, Fixes & News",
+    description:
+      "Fan-made No More Room in Hell 2 wiki: release date, price, system requirements, co-op setup, crash fixes and the road from early access to 1.0.",
+    keywords:
+      "no more room in hell 2, nmrh2 wiki, no more room in hell 2 guide, no more room in hell 2 release date, no more room in hell 2 fixes",
+  },
 
-  topNav: [
-    { label: "Weapons", href: "/guide/no-more-room-in-hell-2-weapons-tier-list" },
-    { label: "Gameplay", href: "/guide/no-more-room-in-hell-2-gameplay" },
-    { label: "Crossplay", href: "/crossplay/no-more-room-in-hell-2-crossplay" },
-    { label: "Roadmap", href: "/release/no-more-room-in-hell-2-roadmap" },
+  hero: {
+    image: "/images/hero-keyart.webp",
+    eyebrow: "Wiki & Guide",
+    title: "No More Room in Hell 2",
+    subtitle: "8-Player Zombie Survival Co-op · Guides, Fixes & Game Info",
+  },
+
+  carousel: {
+    autoPlayMs: 5000,
+    slides: [
+      {
+        image: "/images/slide-release-date.webp",
+        title: "Release Date: From Early Access to 1.0",
+        href: "/guide/no-more-room-in-hell-2-release-date",
+      },
+      {
+        image: "/images/slide-coop-guide.webp",
+        title: "How to Play Co-op With Friends",
+        href: "/guide/no-more-room-in-hell-2-coop-guide",
+      },
+      {
+        image: "/images/slide-roadmap.webp",
+        title: "The Roadmap: Every Update Explained",
+        href: "/news/no-more-room-in-hell-2-roadmap",
+      },
+    ],
+  },
+
+  gameInfo: {
+    title: "No More Room in Hell 2",
+    cover: "/images/game-cover.webp",
+    fields: [
+      { label: "Developer", value: "Torn Banner Studios" },
+      { label: "Publisher", value: "Torn Banner Studios" },
+      { label: "Release Date", value: "August 11, 2026 (1.0)" },
+      { label: "Platforms", value: "PC, PS5, Xbox Series X|S" },
+      { label: "Genre", value: "Co-op Survival Horror FPS" },
+    ],
+    ctaLabel: "View on Steam ↗",
+    ctaHref: "https://store.steampowered.com/app/292000/",
+  },
+
+  videos: [
+    { youtubeId: "NVdmkQXurtA", title: "1.0 Launch Trailer" },
+    { youtubeId: "VvCy0XATln0", title: "Armageddon (1.0) Update Overview" },
+    { youtubeId: "VvLJQZ2vOUU", title: "Official Teaser" },
   ],
 
-  // ⚠️ 导航按实际内容增减，不做死链接
+  officialLinks: [
+    { label: "Official Site", href: "https://www.nomoreroominhell2.com" },
+    { label: "Steam", href: "https://store.steampowered.com/app/292000/" },
+    {
+      label: "YouTube",
+      href: "https://www.youtube.com/channel/UCygSSHjXjhLdPeDf1SDXqHw",
+    },
+  ],
+
   nav: [
     {
-      title: "Guide",
+      title: "Game Info",
       children: [
-        { label: "Gameplay Overview", href: "/guide/no-more-room-in-hell-2-gameplay" },
-        { label: "Weapons Tier List", href: "/guide/no-more-room-in-hell-2-weapons-tier-list" },
-        { label: "Best Loadout", href: "/guide/no-more-room-in-hell-2-best-loadout" },
-        { label: "Best Skills", href: "/guide/no-more-room-in-hell-2-best-skills" },
-        { label: "Maps", href: "/guide/no-more-room-in-hell-2-maps" },
-        { label: "Cheats Context", href: "/guide/no-more-room-in-hell-2-cheats" },
-        { label: "Mods", href: "/guide/no-more-room-in-hell-2-mods" },
+        { label: "Release Date & Timeline", href: "/guide/no-more-room-in-hell-2-release-date" },
+        { label: "Price & Editions", href: "/guide/no-more-room-in-hell-2-price" },
+        { label: "Is It Free?", href: "/guide/is-no-more-room-in-hell-2-free" },
+        { label: "Game Engine", href: "/guide/no-more-room-in-hell-2-engine" },
+        { label: "System Requirements", href: "/guide/no-more-room-in-hell-2-system-requirements" },
       ],
     },
     {
-      title: "Co-op & Crossplay",
+      title: "Guides & Fixes",
       children: [
-        { label: "Crossplay Status", href: "/crossplay/no-more-room-in-hell-2-crossplay" },
-        { label: "Cross-Platform", href: "/crossplay/no-more-room-in-hell-2-cross-platform" },
-        { label: "Player Count", href: "/crossplay/no-more-room-in-hell-2-player-count" },
-        { label: "Solo Mode", href: "/crossplay/no-more-room-in-hell-2-solo" },
+        { label: "Skip the Intro", href: "/guide/no-more-room-in-hell-2-skip-intro" },
+        { label: "Crash Fixes", href: "/guide/no-more-room-in-hell-2-crash-fix" },
+        { label: "Loading Screen Fixes", href: "/guide/no-more-room-in-hell-2-stuck-on-loading" },
+        { label: "Microphone Fix", href: "/guide/no-more-room-in-hell-2-mic-not-working" },
       ],
     },
     {
-      title: "Release",
+      title: "Multiplayer",
       children: [
-        { label: "Release Date", href: "/release/no-more-room-in-hell-2-release-date" },
-        { label: "Roadmap", href: "/release/no-more-room-in-hell-2-roadmap" },
-        { label: "PS5 Version", href: "/release/no-more-room-in-hell-2-ps5" },
-        { label: "Xbox Version", href: "/release/no-more-room-in-hell-2-xbox" },
-        { label: "Steam Version", href: "/release/no-more-room-in-hell-2-steam" },
+        { label: "Co-op Guide", href: "/guide/no-more-room-in-hell-2-coop-guide" },
+        { label: "High Ping Fixes", href: "/guide/no-more-room-in-hell-2-high-ping" },
+        { label: "Server Assignment Failed", href: "/guide/no-more-room-in-hell-2-server-assignment-failed" },
       ],
     },
     {
-      title: "Reviews",
+      title: "News",
       children: [
-        { label: "Review Roundup", href: "/review/no-more-room-in-hell-2-review" },
-        { label: "Metacritic", href: "/review/no-more-room-in-hell-2-metacritic" },
-        { label: "Price", href: "/review/no-more-room-in-hell-2-price" },
-        { label: "Steam Key", href: "/review/no-more-room-in-hell-2-steam-key" },
-      ],
-    },
-    {
-      title: "Stats",
-      children: [
-        { label: "SteamDB Tracker", href: "/community/no-more-room-in-hell-2-steamdb" },
+        { label: "Early Access Launch", href: "/news/no-more-room-in-hell-2-early-access-launch" },
+        { label: "Launch Reception", href: "/news/no-more-room-in-hell-2-launch-reception" },
+        { label: "Developer Response", href: "/news/no-more-room-in-hell-2-dev-response" },
+        { label: "Torn Banner Layoffs", href: "/news/torn-banner-studios-layoffs" },
+        { label: "Update Roadmap", href: "/news/no-more-room-in-hell-2-roadmap" },
+        { label: "1.0 Delay", href: "/news/no-more-room-in-hell-2-1-0-delay" },
       ],
     },
   ],
 
-  // 官方游戏频道播放量最高的 NMRiH2 专属视频（Teaser, 35万播放）
-  heroVideo: {
-    youtubeId: "VvLJQZ2vOUU",
-    title: "No More Room in Hell 2 — Teaser",
-    description:
-      "The official teaser from the No More Room in Hell channel. 8-player co-op survival horror from Torn Banner Studios.",
+  sectionIntros: {
+    guide:
+      "Practical No More Room in Hell 2 guides: release info, pricing, system requirements, co-op setup and fixes for the most common PC problems.",
+    news:
+      "The story of No More Room in Hell 2's road from a rocky early access launch to the 1.0 release — reception, layoffs, roadmaps and delays.",
   },
 
-  trending: [
-    {
-      label: "Every Gun Ranked",
-      href: "/guide/no-more-room-in-hell-2-weapons-tier-list",
-      description: "M7A1, X12 Super, M14 and more — stats and verdicts.",
-    },
-    {
-      label: "Crossplay Status",
-      href: "/crossplay/no-more-room-in-hell-2-crossplay",
-      description: "PC, PS5 and Xbox — how the platforms connect.",
-    },
-    {
-      label: "Post-Launch Roadmap",
-      href: "/release/no-more-room-in-hell-2-roadmap",
-      description: "Hell Mode, Responder Retirement and the 2026 updates.",
-    },
-    {
-      label: "Player Count",
-      href: "/crossplay/no-more-room-in-hell-2-player-count",
-      description: "16,330 all-time peak and where to check live numbers.",
-    },
-  ],
-
-  gameIntro: {
-    title: "What is No More Room in Hell 2?",
-    paragraphs: [
-      "No More Room in Hell 2 is an 8-player co-op zombie survival shooter from Torn Banner Studios. Its 1.0 \"Armageddon\" release landed in August 2026 after a long Early Access, bringing PS5 and Xbox into the same ecosystem as PC.",
-      "You and your team of Responders drop into massive dark maps, scavenge for weapons and supplies, and fight through escalating hordes toward extraction — with permadeath, an infection system, and characters whose skills make every loss hurt.",
-      "This wiki aggregates real, sourced material: full guides and reviews from established creators, official store listings and developer blogs — every answer traces back to something real.",
-    ],
-    facts: [
-      { label: "Developer", value: "Torn Banner Studios" },
-      { label: "Release (1.0)", value: "August 2026" },
-      { label: "Platforms", value: "Steam, PS5, Xbox" },
-      { label: "Genre", value: "8-Player Co-op Survival Horror" },
-      { label: "Steam App ID", value: "292000" },
-      { label: "Players", value: "1,000,000+ since Early Access" },
-    ],
+  sectionFallbackImages: {
+    guide: "/images/fallback-guide.webp",
+    news: "/images/fallback-news.webp",
   },
 
-  ctaBanner: {
-    title: "Pick the right gun for the job",
-    description:
-      "All the top firearms ranked — M7A1, X12 Super, M14 and more — with the stats and verdicts behind each pick.",
-    buttonLabel: "Read the Weapons Tier List",
-    buttonHref: "/guide/no-more-room-in-hell-2-weapons-tier-list",
+  footer: {
+    copyright:
+      "Fan-made wiki. Not affiliated with Torn Banner Studios.",
+    contactLabel: "Contact",
   },
 
   ads: {
-    sidebar: `<script async="async" data-cfasync="false" src="https://pl31113120.profitableratecpmnetwork.com/20aee027b976905f9912a08597596498/invoke.js"></script>
-<div id="container-20aee027b976905f9912a08597596498"></div>`,
-    footerBanner: `<script>
- atOptions = {
- 'key' : '30b5eba343f05fb5abb995602379aad1',
- 'format' : 'iframe',
- 'height' : 90,
- 'width' : 728,
- 'params' : {}
- };
-</script>
-<script src="https://www.highrevenueformat.com/30b5eba343f05fb5abb995602379aad1/invoke.js"></script>`,
+    sideRailLeft: "<script>\n  atOptions = {\n    'key' : 'b6308a5b96f2f9ab090020218f878622',\n    'format' : 'iframe',\n    'height' : 300,\n    'width' : 160,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/b6308a5b96f2f9ab090020218f878622/invoke.js\"></script>",
+    sideRailRight: "<script>\n  atOptions = {\n    'key' : '809c2a5afda33214213c108393b8e700',\n    'format' : 'iframe',\n    'height' : 600,\n    'width' : 160,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/809c2a5afda33214213c108393b8e700/invoke.js\"></script>",
+    footerBanner: "<script>\n  atOptions = {\n    'key' : '30b5eba343f05fb5abb995602379aad1',\n    'format' : 'iframe',\n    'height' : 90,\n    'width' : 728,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/30b5eba343f05fb5abb995602379aad1/invoke.js\"></script>",
+    articleInline: "<script async=\"async\" data-cfasync=\"false\" src=\"https://pl31113120.profitableratecpmnetwork.com/20aee027b976905f9912a08597596498/invoke.js\"></script>\n<div id=\"container-20aee027b976905f9912a08597596498\"></div>",
   },
-
-  faq: [
-    {
-      question: "Is No More Room in Hell 2 crossplay?",
-      answer:
-        "The game spans PC (Steam), PS5 and Xbox, and crossplay is part of the design — community threads documented launch-period issues, and the September update targets a more consistent experience across platforms. See our crossplay page for the details.",
-    },
-    {
-      question: "How many players can play together?",
-      answer:
-        "Up to 8 players in co-op lobbies, across maps like Lewiston, Pottsville and Raven Rock. There's also a Survival horde-defense mode and a Solo Training Mode.",
-    },
-    {
-      question: "Does it have permadeath?",
-      answer:
-        "Yes — losing a character can wipe their level, skills, gear and currency, especially on higher difficulties. The 1.0 update added rescue beacons as a safety net, and Solo Training Mode plays without those stakes.",
-    },
-    {
-      question: "Can you play solo?",
-      answer:
-        "Yes, with caveats: the 1.0 Solo Training Mode runs full maps solo but without progression or permadeath. High-level solo runs on Nightmare are possible (and documented), but the game is designed around co-op. Solo Mode expansion is on the developer's investigation list.",
-    },
-    {
-      question: "How much does it cost?",
-      answer:
-        "It launched at $19.49 USD with a 35% launch discount at our August 2026 scan, across Steam, PS5 and Xbox. Prices change — check the official store pages for current pricing.",
-    },
-  ],
-
-  keywords: [
-    "no more room in hell 2",
-    "nmrih 2",
-    "no more room in hell 2 wiki",
-    "no more room in hell 2 weapons",
-    "no more room in hell 2 crossplay",
-    "no more room in hell 2 gameplay",
-  ],
 };
